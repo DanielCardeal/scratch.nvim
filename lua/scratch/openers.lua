@@ -1,5 +1,3 @@
-local AUGROUP = vim.api.nvim_create_augroup("scratch", { clear = false })
-
 local M = {}
 
 function M.float(bufnr)
@@ -22,18 +20,25 @@ function M.float(bufnr)
 	})
 
 	vim.api.nvim_create_autocmd("WinLeave", {
-		group = AUGROUP,
+		group = vim.api.nvim_create_augroup("scratch", { clear = false }),
 		buffer = bufnr,
 		command = "silent q",
 	})
 end
 
 function M.vsplit(bufnr)
-	vim.notify("TODO", vim.log.levels.ERROR)
+	vim.api.nvim_open_win(bufnr, true, {
+		split = "right",
+		win = 0,
+	})
 end
 
 function M.split(bufnr)
-	vim.notify("TODO", vim.log.levels.ERROR)
+	vim.api.nvim_open_win(bufnr, true, {
+		split = "below",
+		win = -1,
+		height = 10,
+	})
 end
 
 return M
