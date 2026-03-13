@@ -2,6 +2,7 @@ local openers = require("scratch.openers")
 
 local M = {
 	opts = {
+		autosave = true,
 		filepath = vim.fn.stdpath("data") .. "/scratch.txt",
 		opener = openers.float,
 	},
@@ -31,11 +32,13 @@ local _get_scratch_buf = (function()
 			bufnr = vim.api.nvim_create_buf(false, true)
 		end
 
-		vim.api.nvim_create_autocmd({ "BufDelete", "BufHidden", "BufLeave", "WinLeave" }, {
-			group = vim.api.nvim_create_augroup("scratch", { clear = false }),
-			buffer = bufnr,
-			command = "silent w",
-		})
+		if M.opts.autosave == true then
+			vim.api.nvim_create_autocmd({ "BufDelete", "BufHidden", "BufLeave", "WinLeave" }, {
+				group = vim.api.nvim_create_augroup("scratch", { clear = false }),
+				buffer = bufnr,
+				command = "silent w",
+			})
+		end
 
 		return bufnr
 	end
