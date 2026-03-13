@@ -8,7 +8,7 @@ function M.float(bufnr)
 	local col = math.floor((ui.width - width) / 2)
 	local row = math.floor((ui.height - height) / 2)
 
-	vim.api.nvim_open_win(bufnr, true, {
+	local win = vim.api.nvim_open_win(bufnr, true, {
 		title = "[SCRATCH]",
 		title_pos = "center",
 		border = "rounded",
@@ -20,9 +20,11 @@ function M.float(bufnr)
 	})
 
 	vim.api.nvim_create_autocmd("WinLeave", {
-		group = vim.api.nvim_create_augroup("scratch", { clear = false }),
+		group = vim.api.nvim_create_augroup("scratch:float-close", { clear = true }),
 		buffer = bufnr,
-		command = "silent q",
+		callback = function()
+			vim.api.nvim_win_close(win, true)
+		end,
 	})
 end
 

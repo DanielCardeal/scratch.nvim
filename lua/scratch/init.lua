@@ -34,7 +34,7 @@ local _get_scratch_buf = (function()
 
 		if M.opts.autosave == true then
 			vim.api.nvim_create_autocmd({ "BufDelete", "BufHidden", "BufLeave", "WinLeave" }, {
-				group = vim.api.nvim_create_augroup("scratch", { clear = false }),
+				group = vim.api.nvim_create_augroup("scratch:autosave", { clear = true }),
 				buffer = bufnr,
 				command = "silent w",
 			})
