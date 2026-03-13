@@ -32,7 +32,7 @@ local _get_scratch_buf = (function()
 			bufnr = vim.api.nvim_create_buf(false, true)
 		end
 
-		if M.opts.autosave == true then
+		if M.opts.autosave == true and M.opts.filepath ~= "" then
 			vim.api.nvim_create_autocmd({ "BufDelete", "BufHidden", "BufLeave", "WinLeave" }, {
 				group = vim.api.nvim_create_augroup("scratch:autosave", { clear = true }),
 				buffer = bufnr,
@@ -46,6 +46,10 @@ end)()
 
 function M.setup(opts)
 	M.opts = vim.tbl_deep_extend("force", M.opts, opts or {})
+
+	if M.opts.autosave == true and M.opts.filepath == "" then
+		vim.notify('autosave enabled but filepath is empty ("")', vim.log.levels.WARN)
+	end
 
 	vim.api.nvim_create_user_command("ScratchOpen", M.api.open, {})
 	vim.api.nvim_create_user_command("ScratchClose", M.api.close, {})
