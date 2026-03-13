@@ -31,7 +31,7 @@ end
 function M.vsplit(bufnr)
 	vim.api.nvim_open_win(bufnr, true, {
 		split = "right",
-		win = 0,
+		win = -1,
 	})
 end
 
