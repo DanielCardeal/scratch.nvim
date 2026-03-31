@@ -19,11 +19,16 @@ function M.float(bufnr)
 		row = row,
 	})
 
-	vim.api.nvim_create_autocmd("WinLeave", {
+	-- Auto closes float window when focusing on a non-float
+	vim.api.nvim_create_autocmd("WinEnter", {
 		group = vim.api.nvim_create_augroup("scratch:float-close", { clear = true }),
-		buffer = bufnr,
 		callback = function()
-			vim.api.nvim_win_close(win, true)
+			local w = vim.api.nvim_get_current_win()
+			if vim.api.nvim_win_get_config(w).relative == "" then
+				if vim.tbl_contains(vim.api.nvim_list_wins(), win) then
+					vim.api.nvim_win_close(win, true)
+				end
+			end
 		end,
 	})
 end
