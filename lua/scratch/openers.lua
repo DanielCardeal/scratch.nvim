@@ -1,23 +1,24 @@
 local M = {}
 
-function M.float(bufnr)
+local FLOAT_WIDTH_PCT = 0.8
+local FLOAT_HEIGHT_PCT = 0.8
+
+local function get_float_win_config()
 	local ui = vim.api.nvim_list_uis()[1]
+	local cfg = {}
+	cfg.title = "[SCRATCH]"
+	cfg.title_pos = "center"
+	cfg.border = "rounded"
+	cfg.width = math.floor(FLOAT_WIDTH_PCT * ui.width)
+	cfg.height = math.floor(FLOAT_HEIGHT_PCT * ui.height)
+	cfg.relative = "editor"
+	cfg.col = math.floor((ui.width - cfg.width) / 2)
+	cfg.row = math.floor((ui.height - cfg.height) / 2)
+	return cfg
+end
 
-	local width = math.floor(0.8 * ui.width)
-	local height = math.floor(0.8 * ui.height)
-	local col = math.floor((ui.width - width) / 2)
-	local row = math.floor((ui.height - height) / 2)
-
-	local win = vim.api.nvim_open_win(bufnr, true, {
-		title = "[SCRATCH]",
-		title_pos = "center",
-		border = "rounded",
-		relative = "editor",
-		width = width,
-		height = height,
-		col = col,
-		row = row,
-	})
+function M.float(bufnr)
+	local win = vim.api.nvim_open_win(bufnr, true, get_float_win_config())
 
 	-- Auto closes float window when focusing on a non-float
 	vim.api.nvim_create_autocmd("WinEnter", {
@@ -29,6 +30,15 @@ function M.float(bufnr)
 					vim.api.nvim_win_close(win, true)
 				end
 			end
+		end,
+	})
+
+	-- Auto resize window on terminal resize
+	vim.api.nvim_create_autocmd("VimResized", {
+		group = vim.api.nvim_create_augroup("scratch:float-resize", { clear = true }),
+		callback = function()
+			local w = vim.api.nvim_get_current_win()
+			vim.api.nvim_win_set_config(w, get_float_win_config())
 		end,
 	})
 end
