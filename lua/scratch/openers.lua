@@ -23,6 +23,7 @@ function M.float(bufnr)
 	-- Auto closes float window when focusing on a non-float
 	vim.api.nvim_create_autocmd("WinEnter", {
 		group = vim.api.nvim_create_augroup("scratch:float-close", { clear = true }),
+		buf = bufnr,
 		callback = function()
 			local w = vim.api.nvim_get_current_win()
 			if vim.api.nvim_win_get_config(w).relative == "" then
@@ -36,6 +37,7 @@ function M.float(bufnr)
 	-- Auto resize window on terminal resize
 	vim.api.nvim_create_autocmd("VimResized", {
 		group = vim.api.nvim_create_augroup("scratch:float-resize", { clear = true }),
+		buf = bufnr,
 		callback = function()
 			local w = vim.api.nvim_get_current_win()
 			vim.api.nvim_win_set_config(w, get_float_win_config())
